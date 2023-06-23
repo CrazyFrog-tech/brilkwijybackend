@@ -2,6 +2,7 @@ package nl.spring.brilkwijt.dto;
 
 
 import java.io.Serializable;
+import java.util.Date;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -14,11 +15,14 @@ public class Bril implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name")
-    private String name;
-    @Column(name = "imageContent")
-    @Lob
-    private byte[] image;
-  
+    @Column(name = "description")
+    private String description;
+//    @Column(name = "imageContent")
+//    @Lob
+//    private byte[] image;
+//
+//    @Column(name = "lostDate")
+//    private Date lostDate;
+
     // Add additional fields and methods as needed
 }
