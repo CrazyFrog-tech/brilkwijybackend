@@ -17,6 +17,10 @@ public class Bril implements Serializable {
     private Long id;
     @Column(name = "description")
     private String description;
+    @Column(name = "lostAt")
+    private Date lostAtDate;
+
+
 //    @Column(name = "imageContent")
 //    @Lob
 //    private byte[] image;
