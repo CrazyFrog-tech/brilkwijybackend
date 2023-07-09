@@ -19,6 +19,9 @@ public class Bril implements Serializable {
     private String description;
     @Column(name = "lostAt")
     private Date lostAtDate;
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
 
 //    @Column(name = "imageContent")
