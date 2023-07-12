@@ -1,4 +1,4 @@
-package nl.spring.brilkwijt.dto;
+package nl.spring.brilkwijt.repos.dto;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -21,10 +21,10 @@ public class Address implements Serializable{
     private Long id;
     @Column(name = "street")
     private String street;
-    @Column(name = "postalCode")
-    private String postalCode;
+    @Column(name = "zipCode")
+    private String zipCode;
     @Column(name = "city")
     private String city;
-    @OneToMany(mappedBy = "bril")
+    @OneToMany(mappedBy = "address")
     private Set<Bril> brillen;
 }

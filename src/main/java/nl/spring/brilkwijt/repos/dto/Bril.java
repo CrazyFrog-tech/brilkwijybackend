@@ -1,4 +1,4 @@
-package nl.spring.brilkwijt.dto;
+package nl.spring.brilkwijt.repos.dto;
 
 
 import java.io.Serializable;
