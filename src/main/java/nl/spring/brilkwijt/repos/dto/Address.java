@@ -21,6 +21,8 @@ public class Address implements Serializable{
     private Long id;
     @Column(name = "street")
     private String street;
+    @Column(name = "houseNr")
+    private String houseNr;
     @Column(name = "zipCode")
     private String zipCode;
     @Column(name = "city")

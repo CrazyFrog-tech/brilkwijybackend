@@ -3,13 +3,17 @@ package nl.spring.brilkwijt.repos.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @SuppressWarnings("serial")
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "bril")
 public class Bril implements Serializable {
     @Id
@@ -19,9 +23,11 @@ public class Bril implements Serializable {
     private String description;
     @Column(name = "lostAt")
     private Date lostAtDate;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+    @OneToMany(mappedBy = "bril")
+    private Set<Image> images;
 
 
 //    @Column(name = "imageContent")
