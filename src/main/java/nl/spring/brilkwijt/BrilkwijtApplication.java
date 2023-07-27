@@ -11,7 +11,9 @@ import nl.spring.brilkwijt.repos.BrilRepository;
 public class BrilkwijtApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BrilkwijtApplication.class, args);
+
+
+        SpringApplication.run(BrilkwijtApplication.class, args);
 	}
 
 }

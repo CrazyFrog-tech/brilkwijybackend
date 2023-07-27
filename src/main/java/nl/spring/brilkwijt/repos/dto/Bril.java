@@ -2,7 +2,9 @@ package nl.spring.brilkwijt.repos.dto;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -26,16 +28,8 @@ public class Bril implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
-    @OneToMany(mappedBy = "bril")
-    private Set<Image> images;
-
-
-//    @Column(name = "imageContent")
-//    @Lob
-//    private byte[] image;
-//
-//    @Column(name = "lostDate")
-//    private Date lostDate;
-
-    // Add additional fields and methods as needed
+    @ElementCollection
+    @CollectionTable(name = "user_images", joinColumns = @JoinColumn(name = "bril_id"))
+    @Column(name = "image_filename")
+    private List<String> imageFilenames = new ArrayList<>();
 }
