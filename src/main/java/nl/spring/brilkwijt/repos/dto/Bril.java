@@ -25,10 +25,9 @@ public class Bril implements Serializable {
     private String description;
     @Column(name = "lostAt")
     private Date lostAtDate;
-//    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "address_id", nullable = false)
-    @Column(name = "address")
-    private String address;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
     @ElementCollection
     @CollectionTable(name = "user_images", joinColumns = @JoinColumn(name = "bril_id"))
     @Column(name = "image_filename")
