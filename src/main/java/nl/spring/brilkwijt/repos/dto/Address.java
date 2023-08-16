@@ -3,6 +3,8 @@ package nl.spring.brilkwijt.repos.dto;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,5 +30,6 @@ public class Address implements Serializable{
     @Column(name = "city")
     private String city;
     @OneToMany(mappedBy = "address")
+    @JsonIgnore
     private Set<Bril> brillen;
 }
