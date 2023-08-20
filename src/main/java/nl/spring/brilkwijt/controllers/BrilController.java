@@ -5,13 +5,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +48,31 @@ public class BrilController {
 
     @GetMapping("/brillen")
     public List<Bril> getAllBrillen() {
-        return brilRepository.findAll();
+        List<Bril> brillen = brilRepository.findAll();
+        List<Bril> toReturnBrillen = new ArrayList<>();
+        for (Bril bril: brillen){
+            Bril tempBril = new Bril();
+            tempBril.setDescription(bril.getDescription());
+            tempBril.setAddress(bril.getAddress());
+            if(!bril.getImageFilenames().isEmpty()) {
+                tempBril.setImageFilenames(Collections.singletonList(bril.getImageFilenames().get(0)));
+            }
+            toReturnBrillen.add(tempBril);
+        }
+
+        return toReturnBrillen;
+    }
+
+    @GetMapping("/bril-image/{imageName}")
+    public ResponseEntity<Resource> getBrilImage(@PathVariable("imageName") String imageName) throws IOException {
+        Resource resource = new FileSystemResource(imageName);
+        if (resource.exists()) {
+            return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // Adjust content type as needed
+                .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping(value = "/description", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -63,6 +92,7 @@ public class BrilController {
             imageFileNames.add(imageFileName);
         }
         savedBril.setImageFilenames(imageFileNames);
+        brilRepository.save(savedBril);
         return savedBril;
     }
 }
