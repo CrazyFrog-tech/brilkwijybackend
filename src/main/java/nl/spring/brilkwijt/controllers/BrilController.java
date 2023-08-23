@@ -65,7 +65,7 @@ public class BrilController {
     }
 
     @GetMapping("/brilImage")
-    public ResponseEntity<Resource> getBrilImage(@RequestParam("imageName") String imageName) throws IOException {
+    public ResponseEntity<Resource> getBrilImage(@RequestParam("imageName") String imageName) {
         Resource resource = new FileSystemResource(imageName);
         if (resource.exists()) {
             return ResponseEntity.ok()
@@ -90,7 +90,7 @@ public class BrilController {
             }
             //write data to file
             Files.copy(image.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-            imageFileNames.add(imageFileName);
+            imageFileNames.add(imagePath.toString());
         }
         savedBril.setImageFilenames(imageFileNames);
         brilRepository.save(savedBril);
