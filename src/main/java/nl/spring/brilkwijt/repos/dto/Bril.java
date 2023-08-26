@@ -26,6 +26,8 @@ public class Bril implements Serializable {
     private Long id;
     @Column(name = "description")
     private String description;
+    @Column(name = "titel")
+    private String titel;
     @Column(name = "lostAt")
     private Date lostAtDate;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

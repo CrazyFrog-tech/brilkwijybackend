@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,11 +50,12 @@ public class BrilController {
     public List<Bril> getAllBrillen() {
         List<Bril> brillen = brilRepository.findAll();
         List<Bril> toReturnBrillen = new ArrayList<>();
-        for (Bril bril: brillen){
+        for (Bril bril : brillen) {
             Bril tempBril = new Bril();
-            tempBril.setDescription(bril.getDescription());
+            tempBril.setId(bril.getId());
+            tempBril.setTitel(bril.getTitel());
             tempBril.setAddress(bril.getAddress());
-            if(!bril.getImageFilenames().isEmpty()) {
+            if (!bril.getImageFilenames().isEmpty()) {
                 tempBril.setImageFilenames(Collections.singletonList(bril.getImageFilenames().get(0)));
             }
             toReturnBrillen.add(tempBril);
@@ -71,7 +71,8 @@ public class BrilController {
             return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG) // Adjust content type as needed
                 .body(resource);
-        } else {
+        }
+        else {
             return ResponseEntity.notFound().build();
         }
     }
