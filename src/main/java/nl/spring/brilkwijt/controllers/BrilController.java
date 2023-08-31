@@ -7,6 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +64,14 @@ public class BrilController {
         }
 
         return toReturnBrillen;
+    }
+
+    @GetMapping("/bril/{id}")
+    public ResponseEntity<Bril> getBril(@PathVariable("id") String id) {
+        long idLongy = Long.parseLong(id);
+        Optional<Bril> brilById = this.brilRepository.findById(idLongy);
+        return brilById.map(bril -> ResponseEntity.ok().body(bril)).orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 
     @GetMapping("/brilImage")
