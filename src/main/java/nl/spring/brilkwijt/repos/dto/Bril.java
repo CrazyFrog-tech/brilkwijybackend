@@ -36,8 +36,10 @@ public class Bril implements Serializable {
     private String titel;
     @Column(name = "color")
     private String color;
+    @Column(name = "brand")
+    private String brand;
     @Column(name = "lostAt")
-    private Date lostAtDate;
+    private String lostAtDate;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
