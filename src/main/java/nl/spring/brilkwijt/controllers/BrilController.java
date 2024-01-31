@@ -59,6 +59,7 @@ public class BrilController {
             tempBril.setAddress(bril.getAddress());
             tempBril.setLostAtDate(bril.getLostAtDate());
             tempBril.setBrand(bril.getBrand());
+            tempBril.setCustomer(bril.getCustomer());
             if (!bril.getImageFilenames().isEmpty()) {
                 tempBril.setImageFilenames(Collections.singletonList(bril.getImageFilenames().get(0)));
             }

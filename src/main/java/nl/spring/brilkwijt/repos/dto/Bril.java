@@ -2,7 +2,6 @@ package nl.spring.brilkwijt.repos.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -43,6 +42,9 @@ public class Bril implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
     @ElementCollection
     @CollectionTable(name = "user_images", joinColumns = @JoinColumn(name = "bril_id"))
     @Column(name = "image_filename")

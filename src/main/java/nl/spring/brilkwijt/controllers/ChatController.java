@@ -59,11 +59,11 @@ public class ChatController {
     //finds the chat whose name is the parameter, if it doesn't exist it gets created, the ID gets returned either way
     private Chat createAndOrGetChat(String name) {
         Chat ce = chatRepository.findChatByName(name);
-
         if (ce != null) {
             return ce;
         }
         else {
+            // name of the chat is not being inserted correctly
             Chat newChat = new Chat(name);
             return chatRepository.save(newChat);
         }

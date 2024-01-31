@@ -9,23 +9,16 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name = "chat")
-public class Chat {
+@Table(name = "customer")
+public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "name")
-    private String name;
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
+    @Column(name = "customerName")
+    private String customerName;
+    @OneToMany(mappedBy = "customer")
     @JsonIgnore
-    private Set<Message> messages;
+    private Set<Bril> brillen;
 
-    public Chat(String name) {
-        this.name = name;
-    }
 
-    public Chat() {
-
-    }
 }
