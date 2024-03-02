@@ -38,16 +38,27 @@ public class ChatController {
         simpMessagingTemplate.convertAndSend("/topic/messages/" + to, message);
     }
 
-    @PostMapping("/getChats")
+    @GetMapping("/getChats")
     public List<Chat> getChats(){
         return chatRepository.findAll();
     }
 
-    //returns an empty list if the chat doesn't exist
     @PostMapping("/getMessages")
     public List<Message> getMessages(@RequestBody String chat) {
         Chat ce = chatRepository.findChatByName(chat);
 
+        if(ce != null) {
+            return messageRepository.findAllByChat_id(ce.getId());
+        }
+        else{
+            return new ArrayList<Message>();
+        }
+    }
+
+    @PostMapping("/getChatMessages")
+    public List<Message> getChatMessages(@RequestBody String id) {
+        long idToLong = Long.parseLong(id);
+        Chat ce = chatRepository.findChatById(idToLong);
         if(ce != null) {
             return messageRepository.findAllByChat_id(ce.getId());
         }
