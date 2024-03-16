@@ -1,20 +1,25 @@
 package nl.spring.brilkwijt.controllers;
 
-import nl.spring.brilkwijt.repos.BrilRepository;
-import nl.spring.brilkwijt.repos.ChatRepository;
-import nl.spring.brilkwijt.repos.MessageRepository;
-import nl.spring.brilkwijt.repos.dto.Chat;
-import nl.spring.brilkwijt.repos.dto.Message;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import nl.spring.brilkwijt.repos.ChatRepository;
+import nl.spring.brilkwijt.repos.MessageRepository;
+import nl.spring.brilkwijt.repos.dto.Chat;
+import nl.spring.brilkwijt.repos.dto.Message;
 
 @CrossOrigin
 @RestController
@@ -29,8 +34,8 @@ public class ChatController {
     @Autowired
     private ChatRepository chatRepository;
 
-    @MessageMapping("/chat/{to}") //to = nome canale
-    public void sendMessage(@DestinationVariable String to , Message message) {
+    @MessageMapping("chat/{to}") //to = nome canale
+    public void sendMessage(@DestinationVariable String to, Message message) {
         System.out.println("handling send message: " + message + " to: " + to);
         message.setChat(createAndOrGetChat(to));
         message.setT_stamp(generateTimeStamp());
@@ -39,7 +44,7 @@ public class ChatController {
     }
 
     @GetMapping("/getChats")
-    public List<Chat> getChats(){
+    public List<Chat> getChats() {
         return chatRepository.findAll();
     }
 
@@ -49,7 +54,7 @@ public class ChatController {
         if(ce != null) {
             return messageRepository.findAllByChat_id(ce.getId());
         }
-        else{
+        else {
             return new ArrayList<Message>();
         }
     }
@@ -61,10 +66,11 @@ public class ChatController {
         if(ce != null) {
             return messageRepository.findAllByChat_id(ce.getId());
         }
-        else{
+        else {
             return new ArrayList<Message>();
         }
     }
+
     //finds the chat whose name is the parameter, if it doesn't exist it gets created, the ID gets returned either way
     private Chat createAndOrGetChat(String name) {
         Chat ce = chatRepository.findChatByName(name);
@@ -92,7 +98,8 @@ public class ChatController {
         int minutes = i.atZone(ZoneOffset.UTC).getMinute();
         if (minutes > 9) {
             time += Integer.toString(minutes);
-        } else {
+        }
+        else {
             time += "0" + Integer.toString(minutes);
         }
 
@@ -100,7 +107,5 @@ public class ChatController {
         String timeStamp = date + "-" + time;
         return timeStamp;
     }
-
-
 
 }

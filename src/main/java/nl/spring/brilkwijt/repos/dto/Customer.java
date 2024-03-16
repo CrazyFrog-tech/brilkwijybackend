@@ -11,6 +11,7 @@ import java.util.Set;
 @Data
 @Table(name = "customer")
 public class Customer {
+//    TODO make customer great again by making the name the id bacause it's the email anyways
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
