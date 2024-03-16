@@ -46,7 +46,6 @@ public class ChatController {
     @PostMapping("/getMessages")
     public List<Message> getMessages(@RequestBody String chat) {
         Chat ce = chatRepository.findChatByName(chat);
-
         if(ce != null) {
             return messageRepository.findAllByChat_id(ce.getId());
         }
@@ -66,7 +65,6 @@ public class ChatController {
             return new ArrayList<Message>();
         }
     }
-
     //finds the chat whose name is the parameter, if it doesn't exist it gets created, the ID gets returned either way
     private Chat createAndOrGetChat(String name) {
         Chat ce = chatRepository.findChatByName(name);
