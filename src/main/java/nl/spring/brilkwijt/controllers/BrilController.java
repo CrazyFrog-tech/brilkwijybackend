@@ -100,7 +100,7 @@ public class BrilController {
             String imageFileName = "/images/" + savedBril.getId() + "_" + image.getOriginalFilename();
             Path imagePath = Path.of(imageUploadPath + imageFileName);
             if (!Files.exists(imagePath)) {
-                Files.createDirectories(imagePath);
+                Files.createDirectories(imagePath.getParent());
             }
             //write data to file
             Files.copy(image.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
