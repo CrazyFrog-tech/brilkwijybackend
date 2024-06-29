@@ -48,6 +48,6 @@ public class Bril implements Serializable {
     @ElementCollection
     @CollectionTable(name = "user_images", joinColumns = @JoinColumn(name = "bril_id"))
     @Column(name = "image_filename")
-    private List<String> imageFilenames = new ArrayList<>();
+    private List<String> imageBlobIds = new ArrayList<>();
 
 }

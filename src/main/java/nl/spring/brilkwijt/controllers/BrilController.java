@@ -1,9 +1,6 @@
 package nl.spring.brilkwijt.controllers;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +8,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,6 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 
 import nl.spring.brilkwijt.repos.BrilRepository;
 import nl.spring.brilkwijt.repos.dto.Bril;
@@ -41,6 +41,16 @@ public class BrilController {
 
     @Value("${image.upload.path}")
     private String imageUploadPath;
+
+    @Value("${google.project.id}")
+    private String projectId;
+
+    @Value("${google.bucket.name}")
+    private String bucketName;
+
+    public Storage getStorage() {
+        return StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+    }
 
     @PostMapping
     public String create(@RequestBody Bril bril) {
@@ -60,8 +70,8 @@ public class BrilController {
             tempBril.setLostAtDate(bril.getLostAtDate());
             tempBril.setBrand(bril.getBrand());
             tempBril.setCustomer(bril.getCustomer());
-            if (!bril.getImageFilenames().isEmpty()) {
-                tempBril.setImageFilenames(Collections.singletonList(bril.getImageFilenames().get(0)));
+            if (!bril.getImageBlobIds().isEmpty()) {
+                tempBril.setImageBlobIds(Collections.singletonList(bril.getImageBlobIds().get(0)));
             }
             toReturnBrillen.add(tempBril);
         }
@@ -78,12 +88,12 @@ public class BrilController {
     }
 
     @GetMapping("/brilImage")
-    public ResponseEntity<Resource> getBrilImage(@RequestParam("imageName") String imageName) {
-        Resource resource = new FileSystemResource(imageName);
-        if (resource.exists()) {
+    public ResponseEntity<byte[]> getBrilImage(@RequestParam("imageName") String imageName) {
+        byte[] image = downloadImage(imageName);
+        if (image != null) {
             return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG) // Adjust content type as needed
-                .body(resource);
+                .body(image);
         }
         else {
             return ResponseEntity.notFound().build();
@@ -98,16 +108,33 @@ public class BrilController {
         List<String> imageFileNames = new ArrayList<>();
         for (MultipartFile image : images) {
             String imageFileName = "/images/" + savedBril.getId() + "_" + image.getOriginalFilename();
-            Path imagePath = Path.of(imageUploadPath + imageFileName);
-            if (!Files.exists(imagePath)) {
-                Files.createDirectories(imagePath.getParent());
-            }
-            //write data to file
-            Files.copy(image.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-            imageFileNames.add(imagePath.toString());
+            BlobId imageBlobId = uploadImage(imageFileName, image);
+            if (imageBlobId != null && !imageBlobId.getName().isEmpty())
+                imageFileNames.add(imageFileName);
         }
-        savedBril.setImageFilenames(imageFileNames);
+        savedBril.setImageBlobIds(imageFileNames);
         brilRepository.save(savedBril);
         return savedBril;
+    }
+
+    private BlobId uploadImage(String imageName, MultipartFile image) {
+        BlobId blobId = BlobId.of(bucketName, imageName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+        try {
+            Storage storage = this.getStorage();
+            storage.create(blobInfo, image.getBytes());
+            return blobId;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return blobId;
+    }
+
+    private byte[] downloadImage(String imageName) {
+        BlobId blobId = BlobId.of(bucketName, imageName);
+        Storage storage = this.getStorage();
+        Blob blob = storage.get(blobId);
+        return blob.getContent();
     }
 }
