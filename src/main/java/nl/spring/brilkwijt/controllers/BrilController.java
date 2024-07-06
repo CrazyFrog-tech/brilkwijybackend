@@ -1,5 +1,6 @@
 package nl.spring.brilkwijt.controllers;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -39,9 +41,6 @@ public class BrilController {
     @Autowired
     BrilRepository brilRepository;
 
-    @Value("${image.upload.path}")
-    private String imageUploadPath;
-
     @Value("${google.project.id}")
     private String projectId;
 
@@ -49,7 +48,16 @@ public class BrilController {
     private String bucketName;
 
     public Storage getStorage() {
-        return StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+        GoogleCredentials credentials;
+        try {
+            credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/credentials/storage.json"));
+            System.out.println("Credentials loaded" + credentials.toString());
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e.getMessage() + " credentials cannot be loaded");
+        }
+
+        return StorageOptions.newBuilder().setCredentials(credentials).setProjectId(projectId).build().getService();
     }
 
     @PostMapping
