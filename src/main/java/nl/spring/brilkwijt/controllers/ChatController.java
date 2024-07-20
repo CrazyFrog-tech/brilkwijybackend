@@ -10,7 +10,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,9 +42,9 @@ public class ChatController {
         simpMessagingTemplate.convertAndSend("/topic/messages/" + to, message);
     }
 
-    @GetMapping("/getChats")
-    public List<Chat> getChats() {
-        return chatRepository.findAll();
+    @PostMapping("/getChatsForCustomer")
+    public List<Chat> getChatsForCustomer(@RequestBody String customerName) {
+        return chatRepository.findChatsByNameContains(customerName);
     }
 
     @PostMapping("/getMessages")
@@ -55,7 +54,7 @@ public class ChatController {
             return messageRepository.findAllByChat_id(ce.getId());
         }
         else {
-            return new ArrayList<Message>();
+            return new ArrayList<>();
         }
     }
 
@@ -67,7 +66,7 @@ public class ChatController {
             return messageRepository.findAllByChat_id(ce.getId());
         }
         else {
-            return new ArrayList<Message>();
+            return new ArrayList<>();
         }
     }
 
@@ -87,7 +86,6 @@ public class ChatController {
     private String generateTimeStamp() {
         Instant i = Instant.now();
         String date = i.toString();
-        System.out.println("Source: " + i.toString());
         int endRange = date.indexOf('T');
         date = date.substring(0, endRange);
         date = date.replace('-', '/');
@@ -100,12 +98,12 @@ public class ChatController {
             time += Integer.toString(minutes);
         }
         else {
-            time += "0" + Integer.toString(minutes);
+            time += "0" + (minutes);
         }
 
         System.out.println("Time extracted: " + time);
-        String timeStamp = date + "-" + time;
-        return timeStamp;
+
+        return date + "-" + time;
     }
 
 }
